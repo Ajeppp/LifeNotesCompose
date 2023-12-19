@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "543039283544",
+    "project_id": "lifenotescompose",
+    "storage_bucket": "lifenotescompose.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543039283544:android:d90e40b4054127ceae852d",
+        "android_client_info": {
+          "package_name": "com.example.lifenotescompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsU15PIR3S4WkDW7Yvfjf9N5NK63rNPPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
