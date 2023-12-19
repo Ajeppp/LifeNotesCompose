@@ -130,6 +130,9 @@ fun AppToolbar() {
         },
         actions = {
             IconButton(onClick = {
+                FirebaseAuth.getInstance().signOut()
+                AppRouter.navigateTo(Screen.Login)
+
             }) {
                 Icon(
                     imageVector = Icons.Default.Logout,

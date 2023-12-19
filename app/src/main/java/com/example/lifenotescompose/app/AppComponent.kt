@@ -2,12 +2,19 @@
 
 package com.example.lifenotescompose.app
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -37,6 +45,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -73,24 +82,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.lifenotescompose.R
 import com.example.lifenotescompose.data.EventData
 import com.example.lifenotescompose.data.EventParamPost
 import com.example.lifenotescompose.data.EventRespModel
 import com.example.lifenotescompose.navigation.AppRouter
 import com.example.lifenotescompose.navigation.Screen
+import com.example.lifenotescompose.screen.createImageFile
 import com.example.lifenotescompose.screen.getData
 import com.example.lifenotescompose.ui.theme.Bg
 import com.example.lifenotescompose.ui.theme.Primary
 import com.example.lifenotescompose.ui.theme.Purple80
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.Objects
 
 @Composable
 fun NormalTextComponent(value: String) {
@@ -621,6 +637,33 @@ fun editDialog(
     eventData: EventData,
     eventParamPost: EventParamPost, uid: String, firestore: FirebaseFirestore
 ) {
+    val context = LocalContext.current
+    val file = context.createImageFile()
+    val uri = FileProvider.getUriForFile(
+        Objects.requireNonNull(context),
+        "com.example.lifenotescompose"+ ".provider", file
+    )
+
+    var capturedImageUri by remember {
+        mutableStateOf<Uri>(Uri.EMPTY)
+    }
+
+    val cameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+            capturedImageUri = uri
+        }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (it) {
+            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+            cameraLauncher.launch(uri)
+        } else {
+            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     val eventText = remember { mutableStateOf("") }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
@@ -631,8 +674,8 @@ fun editDialog(
             Box(
                 modifier = Modifier
                     .background(Color.White)
-                    .height(300.dp)
                     .fillMaxWidth()
+                    .height(600.dp)
             ) {
                 Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                     Spacer(modifier = Modifier.height(10.dp))
@@ -646,6 +689,72 @@ fun editDialog(
                         },
                         controller = eventText
                     )
+                    OutlinedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                    ) {
+                        if (capturedImageUri.path?.isNotEmpty() == true) {
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+
+                                    .padding(16.dp, 8.dp),
+                                painter = rememberAsyncImagePainter(capturedImageUri),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                    if(capturedImageUri.path?.isNotEmpty() == true){
+                        Spacer(modifier = Modifier.height(10.dp))
+                        IconButton(onClick = {
+                            val permissionCheckResult =
+                                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                            if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                                cameraLauncher.launch(uri)
+                            } else {
+                                // Request a permission
+                                permissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
+                        },modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            , enabled = false){
+                            Icon(
+                                painter = painterResource(id = R.drawable.camera),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(100.dp)
+                            )
+                        }
+                    }else {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        IconButton(
+                            onClick = {
+                                val permissionCheckResult =
+                                    ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                                if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                                    cameraLauncher.launch(uri)
+                                } else {
+                                    // Request a permission
+                                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                        ){
+                            Icon(
+                                painter = painterResource(id = R.drawable.camera),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(100.dp)
+                            )
+                        }
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -655,28 +764,38 @@ fun editDialog(
                         Button(
                             modifier = Modifier.width(150.dp),
                             onClick = {
-                                var newData = EventData(
-                                    event = eventText.value,
-                                    email = eventData.email,
-                                    date = eventData.date,
-                                )
+                                val current = LocalDateTime.now()
+                                val storageRef = FirebaseStorage.getInstance().reference
+                                val imageRef = storageRef.child("images/${current}.jpg")
+                                val uploadTask = imageRef.putFile(capturedImageUri)
 
-                                var data = eventParamPost.event.filter { it ->
-                                    it.event == eventData.event
-                                }
-                                var index = eventParamPost.event.indexOf(data.first())
-                                eventParamPost.event[index] = newData
+                                uploadTask.addOnSuccessListener{
+                                    imageRef.downloadUrl.addOnSuccessListener {
+                                        var newData = EventData(
+                                            event = eventText.value,
+                                            email = eventData.email,
+                                            date = eventData.date,
+                                            imageUrl = it.toString()
+                                        )
 
-                                if (eventText.value.isNotEmpty()) {
-                                    EditorDeleteDataEvent(
-                                        eventParamPost,
-                                        uid,
-                                        firestore
-                                    )
-                                } else {
-                                    eventParamPost
+                                        var data = eventParamPost.event.filter { it ->
+                                            it.event == eventData.event
+                                        }
+                                        var index = eventParamPost.event.indexOf(data.first())
+                                        eventParamPost.event[index] = newData
+
+                                        if (eventText.value.isNotEmpty()) {
+                                            EditorDeleteDataEvent(
+                                                eventParamPost,
+                                                uid,
+                                                firestore
+                                            )
+                                        } else {
+                                            eventParamPost
+                                        }
+                                        onBackPressedDispatcher?.onBackPressed()
+                                    }
                                 }
-                                onBackPressedDispatcher?.onBackPressed()
                             }
                         ) {
                             Text(text = "Save")
