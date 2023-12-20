@@ -50,7 +50,7 @@ fun SignUp() {
             .background(Color.White)
             .padding(28.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(top = 50.dp)) {
 
             NormalTextComponent(value = stringResource(id = R.string.helo))
             HeaderTextComponent(value = stringResource(id = R.string.create))

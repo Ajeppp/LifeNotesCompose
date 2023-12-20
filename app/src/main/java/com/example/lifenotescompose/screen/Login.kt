@@ -4,16 +4,19 @@ import android.content.ContentValues
 import android.content.SharedPreferences
 import android.util.Log
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +34,7 @@ import com.example.lifenotescompose.app.TextFieldComponent
 import com.example.lifenotescompose.navigation.AppRouter
 import com.example.lifenotescompose.navigation.Screen
 import com.example.lifenotescompose.navigation.SystemBackHandler
+import com.example.lifenotescompose.ui.theme.PurpleGrey80
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -47,15 +51,21 @@ fun Login() {
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(28.dp)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize().padding()
+                .fillMaxSize().padding(top = 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             HeaderTextComponent(value = stringResource(id = R.string.welcome))
-            Spacer(modifier = Modifier.height(20.dp))
+            Image(
+                painter = painterResource(id = R.drawable.lifenotes),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(80.dp).padding(top = 10.dp),
+            )
+            Spacer(modifier = Modifier.height(40.dp))
             TextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
                 painterResource = painterResource(id = R.drawable.message),
@@ -73,7 +83,7 @@ fun Login() {
 
                 passwordVal = passwordData
             )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(60.dp))
             ButtonComponent(
                 value = stringResource(id = R.string.login),
                 isEnabled = email.value.isNotEmpty() && passwordData.value.isNotEmpty(),
