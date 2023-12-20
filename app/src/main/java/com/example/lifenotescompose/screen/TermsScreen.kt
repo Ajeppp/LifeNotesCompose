@@ -42,11 +42,14 @@ fun TermsScreen() {
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn(
                 modifier = Modifier
-                    .height(700.dp)
+                    .height(650.dp)
                     .background(color = Color.White)
                     .padding(10.dp)
             ){
                 items(listOf(
+                    "We do not collect or share any personal information with third parties. All " +
+                    "data stored locally on your device. By using this app, you agree to our Privacy " +
+                    "Policy. If you have any concerns or questions, please email us at LifeNotes@gmail.com",
                     "1. Acceptance of Terms By accessing this app, you are agreeing to be bound by " +
                     "these app Terms and Conditions of Use, all applicable laws and regulations," +
                     " and agree that you are responsible for compliance with any applicable local laws. If you do" +
