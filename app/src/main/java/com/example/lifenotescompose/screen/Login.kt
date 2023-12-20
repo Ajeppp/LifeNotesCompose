@@ -52,12 +52,10 @@ fun Login() {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().padding()
         ) {
-
-            NormalTextComponent(value = stringResource(id = R.string.login))
             HeaderTextComponent(value = stringResource(id = R.string.welcome))
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             TextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
                 painterResource = painterResource(id = R.drawable.message),

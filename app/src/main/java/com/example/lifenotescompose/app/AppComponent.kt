@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -771,17 +770,17 @@ fun editDialog(
 
                                 uploadTask.addOnSuccessListener{
                                     imageRef.downloadUrl.addOnSuccessListener {
-                                        var newData = EventData(
+                                        val newData = EventData(
                                             event = eventText.value,
                                             email = eventData.email,
                                             date = eventData.date,
                                             imageUrl = it.toString()
                                         )
 
-                                        var data = eventParamPost.event.filter { it ->
+                                        val data = eventParamPost.event.filter { it ->
                                             it.event == eventData.event
                                         }
-                                        var index = eventParamPost.event.indexOf(data.first())
+                                        val index = eventParamPost.event.indexOf(data.first())
                                         eventParamPost.event[index] = newData
 
                                         if (eventText.value.isNotEmpty()) {

@@ -5,12 +5,10 @@ package com.example.lifenotescompose.screen
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -71,7 +69,6 @@ import com.example.lifenotescompose.navigation.BottomNavGraph
 import com.example.lifenotescompose.navigation.Screen
 import com.example.lifenotescompose.navigation.Screens
 import com.example.lifenotescompose.ui.theme.Black
-import com.example.lifenotescompose.ui.theme.White
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -404,10 +401,10 @@ fun HomeScreen() {
                     }.addOnFailureListener {
                         Log.d("Upload Image Failed", "Failed")
                     }
+                    Screens.Home.route
                 },
                 isEnabled = eventText.value.isNotEmpty()
             )
-
         }
     }
 }
