@@ -47,10 +47,7 @@ fun TermsScreen() {
                 AppRouter.navigateTo(Screen.SignUp)
             }, isEnabled = true)
         }
-
-
     }
-
     SystemBackHandler {
         AppRouter.navigateTo(Screen.SignUp)
     }
