@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -69,6 +70,7 @@ import com.example.lifenotescompose.navigation.BottomNavGraph
 import com.example.lifenotescompose.navigation.Screen
 import com.example.lifenotescompose.navigation.Screens
 import com.example.lifenotescompose.ui.theme.Black
+import com.example.lifenotescompose.ui.theme.PurpleGrey40
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -93,8 +95,7 @@ fun MainScreen(index: Int) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+            .fillMaxSize(),
         topBar = {
             AppToolbar()
         },
@@ -282,7 +283,6 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.height(20.dp))
             DailyFieldComponent(
                 labelValue = stringResource(id = R.string.hows),
-                painterResource = painterResource(id = R.drawable.message),
                 onTextSelected = {
                     eventText.value = it
                 },

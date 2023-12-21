@@ -108,7 +108,7 @@ fun SignUp() {
             Spacer(modifier = Modifier.height(80.dp))
             ButtonComponent(
                 value = stringResource(id = R.string.register),
-                isEnabled = firstName.value.isNotEmpty() && lastName.value.isNotEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty() && check.value,
+                isEnabled = firstName.value.isNotEmpty() && lastName.value.isNotEmpty() && email.value.isNotEmpty() && check.value && password.value.length >= 6,
                 onButtonClicked = {
                     Log.d("user nih om ", "${email.value} ${password.value}")
                     val result = createUserFire(

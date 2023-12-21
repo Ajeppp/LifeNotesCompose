@@ -52,6 +52,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -177,8 +178,11 @@ fun EventComponent(
                                         .width(500.dp),
                                     model = item.imageUrl, contentDescription = null
                                 )
-                                Row {
-                                    Button(onClick = {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                ) {
+                                    IconButton(onClick = {
                                         selectedData = item
                                         showDialog = true
                                     }) {
@@ -188,7 +192,7 @@ fun EventComponent(
                                         )
                                     }
                                     Spacer(modifier = Modifier.width(5.dp))
-                                    Button(onClick = {
+                                    IconButton(onClick = {
                                         selectedData = item
                                         showDialogDel = true
                                     }) {
@@ -290,9 +294,8 @@ fun HeaderTextComponent(value: String) {
 // Event Field
 @Composable
 fun DailyFieldComponent(
-    labelValue: String, painterResource: Painter,
+    labelValue: String,
     onTextSelected: (String) -> Unit,
-
     controller: MutableState<String>
 ) {
     val maxChar = 1000
@@ -303,7 +306,7 @@ fun DailyFieldComponent(
                 .height(150.dp),
             label = { Text(text = labelValue) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            singleLine = true,
+            singleLine = false,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Bg,
                 unfocusedContainerColor = Bg,
@@ -318,12 +321,6 @@ fun DailyFieldComponent(
                     controller.value = it
                     onTextSelected(it)
                 }
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = "",
-                )
             },
         )
         Text(
@@ -368,6 +365,12 @@ fun TextFieldComponent(
                 painter = painterResource,
                 contentDescription = "",
             )
+        },
+        isError =
+        if(controller.value.isNotEmpty()){
+            controller.value.length < 3
+        }else{
+            false
         },
     )
 }
@@ -432,6 +435,12 @@ fun PasswordComponent(
             }
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        isError =
+            if(passwordVal.value.isNotEmpty()){
+                passwordVal.value.length < 6
+            }else{
+                false
+            },
     )
 }
 
@@ -682,7 +691,6 @@ fun editDialog(
                     Spacer(modifier = Modifier.height(10.dp))
                     DailyFieldComponent(
                         labelValue = eventData.event,
-                        painterResource = painterResource(id = R.drawable.edit),
                         onTextSelected = {
                             eventText.value = it
                         },
